@@ -21,7 +21,6 @@ const Login = () => {
     if (!res.success) {
       setError(res.error || 'Invalid email or password');
     } else {
-      localStorage.setItem('access_token', res.data.access);
       navigate('/');
     }
   } catch (error) {

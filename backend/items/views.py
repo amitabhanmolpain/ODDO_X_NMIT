@@ -3,6 +3,8 @@ from rest_framework import generics, permissions
 from .models import Product
 from .serializers import ProductSerializer
 from django.db.models import Q
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
 
 class ProductListCreateView(generics.ListCreateAPIView):
     queryset = Product.objects.all().order_by('-created_at')
@@ -20,10 +22,10 @@ class ProductListCreateView(generics.ListCreateAPIView):
 class ProductDetailView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    permission_classes = [permissions.AllowAny]
 
 # --- Full Text Search ---
 from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status
 
 class ProductSearchView(APIView):
@@ -36,6 +38,8 @@ class ProductSearchView(APIView):
     Example:
         /items/search/?q=ps5
     """
+    permission_classes = [permissions.AllowAny]
+    
     def get(self, request):
         query = request.GET.get('q', '')
         if not query:

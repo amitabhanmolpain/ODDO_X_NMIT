@@ -5,16 +5,28 @@ from .serializers import SignupSerializer, ProfileSerializer, LoginSerializer
 from django.contrib.auth import get_user_model
 from items.serializers import ProductSerializer
 from orders.serializers import OrderSerializer
-from rest_framework.response import Response
-from rest_framework import status
-
-
 
 User = get_user_model()
 
 class SignupView(generics.CreateAPIView):
     serializer_class = SignupSerializer
     permission_classes = [permissions.AllowAny]
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        result = serializer.save()
+        
+        # Return tokens for immediate login
+        return Response({
+            'user': {
+                'id': result['user'].id,
+                'email': result['user'].email,
+                'display_name': result['user'].display_name
+            },
+            'access': result['access'],
+            'refresh': result['refresh']
+        }, status=status.HTTP_201_CREATED)
 
 class ProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer

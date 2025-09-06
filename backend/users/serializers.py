@@ -21,7 +21,8 @@ class LoginSerializer(serializers.Serializer):
             'user': {
                 'id': user.id,
                 'email': user.email,
-                'username': getattr(user, 'display_name', user.username)
+                'username': getattr(user, 'display_name', user.username),
+                'display_name': user.display_name
             }
         }
 
@@ -54,7 +55,13 @@ class SignupSerializer(serializers.ModelSerializer):
             username=validated_data['display_name'],  # internal username
             password=validated_data['password']
         )
-        return user
+        # Return user data with tokens for immediate login
+        refresh = RefreshToken.for_user(user)
+        return {
+            'user': user,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token)
+        }
 
 
 class ProfileSerializer(serializers.ModelSerializer):

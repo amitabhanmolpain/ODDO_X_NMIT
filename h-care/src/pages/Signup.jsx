@@ -31,7 +31,7 @@ const Signup = () => {
 
       console.log('Signup API response:', res);
 
-      if (!res.ok) {
+      if (!res.success) {
         setError(res.error || 'Signup failed');
       } else {
         navigate('/');

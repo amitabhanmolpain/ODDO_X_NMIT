@@ -78,18 +78,26 @@ const LandingPage = () => {
       <div className="bg-gray-900 text-white min-h-screen font-sans pt-4">
         <Navbar />
         <div className="flex items-center justify-center h-64">
-          <div className="text-xl text-red-400">Error: {error}</div>
+          <div className="text-center">
+            <div className="text-xl text-red-400 mb-4">Error: {error}</div>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700"
+            >
+              Retry
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   // For demo purposes, create categories from available products
-  const categories = [...new Set(products.map(p => p.category))].map(cat => ({
+  const categories = products.length > 0 ? [...new Set(products.map(p => p.category))].map(cat => ({
     id: cat,
     name: cat,
     image: '/placeholder-category.png' // You can add category images later
-  }));
+  })) : [];
 
   // Curated sections - simple approach for integration
   const recentProducts = products.slice(0, 6);

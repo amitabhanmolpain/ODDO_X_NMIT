@@ -23,12 +23,19 @@ async function apiRequest(endpoint, options = {}) {
 
   try {
     const response = await fetch(url, config);
-    const data = await response.json();
+    
+    let data;
+    try {
+      data = await response.json();
+    } catch (e) {
+      data = { message: 'Invalid response format' };
+    }
     
     console.log('API response:', response.status, data); // Debug log
     
     if (!response.ok) {
-      throw new Error(data.detail || data.message || `HTTP ${response.status}`);
+      const errorMessage = data.detail || data.message || data.error || `HTTP ${response.status}`;
+      throw new Error(errorMessage);
     }
     
     return { success: true, data };
@@ -62,22 +69,15 @@ export const authAPI = {
 // Products API calls
 export const productsAPI = {
   async getAll() {
-    // Don't require auth for listing products
-    return apiRequest('/products/', {
-      headers: { 'Content-Type': 'application/json' } // Override to not include auth headers
-    });
+    return apiRequest('/products/');
   },
 
   async getById(id) {
-    return apiRequest(`/products/${id}/`, {
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return apiRequest(`/products/${id}/`);
   },
 
   async search(query) {
-    return apiRequest(`/products/search/?q=${encodeURIComponent(query)}`, {
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return apiRequest(`/products/search/?q=${encodeURIComponent(query)}`);
   },
 
   async create(productData) {
@@ -92,6 +92,13 @@ export const productsAPI = {
 export const ordersAPI = {
   async getCart() {
     return apiRequest('/orders/cart/');
+  },
+
+  async addToCart(productData) {
+    return apiRequest('/orders/cart/', {
+      method: 'POST',
+      body: JSON.stringify(productData),
+    });
   },
 
   async checkout(orderData) {

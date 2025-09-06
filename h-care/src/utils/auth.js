@@ -17,14 +17,15 @@ export async function signup({ email, display_name, password, confirm_password }
       localStorage.setItem(TOKEN_KEY, result.data.access);
       localStorage.setItem(SESSION_KEY, JSON.stringify({
         email,
-        display_name: result.data.user?.display_name || display_name
+        display_name: result.data.user?.display_name || display_name,
+        id: result.data.user?.id
       }));
-      return { ok: true };
+      return { success: true };
     } else {
-      return { ok: false, error: result.error };
+      return { success: false, error: result.error };
     }
   } catch (error) {
-    return { ok: false, error: 'Network error. Please try again.' };
+    return { success: false, error: 'Network error. Please try again.' };
   }
 }
 
@@ -38,14 +39,16 @@ export async function login({ email, password }) {
       localStorage.setItem(TOKEN_KEY, result.data.access);
       localStorage.setItem(SESSION_KEY, JSON.stringify({ 
         email, 
-        username: result.data.user?.username || email.split('@')[0] 
+        username: result.data.user?.username || email.split('@')[0],
+        display_name: result.data.user?.display_name,
+        id: result.data.user?.id
       }));
-      return { ok: true };
+      return { success: true };
     } else {
-      return { ok: false, error: result.error };
+      return { success: false, error: result.error };
     }
   } catch (error) {
-    return { ok: false, error: 'Network error. Please try again.' };
+    return { success: false, error: 'Network error. Please try again.' };
   }
 }
 
