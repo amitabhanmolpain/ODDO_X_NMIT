@@ -125,13 +125,14 @@ const AddListing = () => {
               <div>
                 <label className="block text-sm mb-1">Category</label>
                 <select value={category} onChange={e=>setCategory(e.target.value)} className="w-full p-2 rounded text-black">
-                  <option>Furniture</option>
-                  <option>Shirts</option>
-                  <option>Pants</option>
-                  <option>Jackets</option>
-                  <option>Kitchen Appliances</option>
-                  <option>Study Material</option>
-                  <option>Beddings</option>
+                  <option value="furniture">Furniture</option>
+                  <option value="clothes">Clothes</option>
+                  <option value="electronics">Electronics</option>
+                  <option value="beddings">Beddings</option>
+                  <option value="wearables">Wearables</option>
+                  <option value="home_decor">Home Decor</option>
+                  <option value="study_material">Study Material</option>
+                  <option value="kitchen_appliances">Kitchen Appliances</option>
                 </select>
               </div>
 

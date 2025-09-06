@@ -96,7 +96,7 @@ const LandingPage = () => {
   const categories = products.length > 0 ? [...new Set(products.map(p => p.category))].map(cat => ({
     id: cat,
     name: cat,
-    image: '/placeholder-category.png' // You can add category images later
+    image: 'https://images.pexels.com/photos/1350789/pexels-photo-1350789.jpeg' // Placeholder category image
   })) : [];
 
   // Curated sections - simple approach for integration

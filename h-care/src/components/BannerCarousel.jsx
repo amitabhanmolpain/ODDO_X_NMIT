@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
 const slides = [
-  { id: 1, title: '50% off on Jackets', subtitle: 'Stay warm with half price on selected jackets', image: '/assets/banner-jackets.png' },
-  { id: 2, title: 'Sell your used goods here', subtitle: 'Clean your room, earn cash — list in minutes', image: '/assets/banner-sell.png' },
-  { id: 3, title: 'Study Material Sale', subtitle: 'Bundles and notes at student-friendly prices', image: '/assets/banner-books.png' },
+  { id: 1, title: '50% off on Jackets', subtitle: 'Stay warm with half price on selected jackets', image: 'https://images.pexels.com/photos/1040945/pexels-photo-1040945.jpeg' },
+  { id: 2, title: 'Sell your used goods here', subtitle: 'Clean your room, earn cash — list in minutes', image: 'https://images.pexels.com/photos/1350789/pexels-photo-1350789.jpeg' },
+  { id: 3, title: 'Study Material Sale', subtitle: 'Bundles and notes at student-friendly prices', image: 'https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg' },
 ];
 
 const BannerCarousel = ({ interval = 3500 }) => {
