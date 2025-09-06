@@ -4,18 +4,21 @@ const SESSION_KEY = 'hc_session';
 const TOKEN_KEY = 'access_token';
 
 // Signup function - now uses backend API
-export async function signup({ email, password, username }) {
+export async function signup({ email, display_name, password, confirm_password }) {
   try {
-    const result = await authAPI.register({ 
-      email, 
-      password, 
-      username: username || email.split('@')[0] // Use email prefix as username if not provided
+    const result = await authAPI.register({
+      email,
+      display_name,
+      password,
+      confirm_password
     });
-    
+
     if (result.success) {
-      // Store the access token
       localStorage.setItem(TOKEN_KEY, result.data.access);
-      localStorage.setItem(SESSION_KEY, JSON.stringify({ email, username: result.data.user?.username || username }));
+      localStorage.setItem(SESSION_KEY, JSON.stringify({
+        email,
+        display_name: result.data.user?.display_name || display_name
+      }));
       return { ok: true };
     } else {
       return { ok: false, error: result.error };

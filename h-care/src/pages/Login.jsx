@@ -10,23 +10,26 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const res = await login({ email, password });
-      if (!res.ok) {
-        setError(res.error);
-      } else {
-        navigate('/');
-      }
-    } catch (error) {
-      setError('Network error. Please try again.');
-    } finally {
-      setLoading(false);
+  e.preventDefault();
+  setLoading(true);
+  setError(null);
+
+  try {
+    const res = await login({ email, password });
+    console.log('Login API response:', res);
+
+    if (!res.success) {
+      setError(res.error || 'Invalid email or password');
+    } else {
+      localStorage.setItem('access_token', res.data.access);
+      navigate('/');
     }
-  };
+  } catch (error) {
+    setError('Network error. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
