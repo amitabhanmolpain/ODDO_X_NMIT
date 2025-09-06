@@ -36,6 +36,7 @@ const LandingPage = () => {
         }
       } catch (err) {
         setError('Failed to load products');
+        console.error('Error fetching products:', err);
       } finally {
         setLoading(false);
       }
