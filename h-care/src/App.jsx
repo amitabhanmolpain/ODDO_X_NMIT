@@ -13,6 +13,7 @@ import Product from "./pages/Product";
 import MyListings from "./pages/MyListings";
 import AddListing from "./pages/AddListing";
 import Purchases from "./pages/Purchases";
+import Category from "./pages/Category";
 
 const App = () => {
   const [toast, setToast] = useState(null);
@@ -41,6 +42,7 @@ const App = () => {
             }
           />
           <Route path="/product/:id" element={<RequireAuth><Product /></RequireAuth>} />
+          <Route path="/category/:name" element={<RequireAuth><Category /></RequireAuth>} />
           <Route path="/my-listings" element={<RequireAuth><MyListings /></RequireAuth>} />
           <Route path="/add-listing" element={<RequireAuth><AddListing /></RequireAuth>} />
           <Route path="/purchases" element={<RequireAuth><Purchases /></RequireAuth>} />

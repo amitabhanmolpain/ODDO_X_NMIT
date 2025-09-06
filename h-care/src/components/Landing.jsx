@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import products, { categories } from "../constants/products";
+import BannerCarousel from './BannerCarousel';
 
 const CART_KEY = "hc_cart";
 
@@ -37,7 +38,17 @@ const LandingPage = () => {
     });
   };
 
-  const categories = Array.from(new Set(products.map((p) => p.category)));
+  // curated sections: enforce limits per design (max 3 each) and keep them disjoint so landing shows 6 unique items
+  const trending = products.filter((p) => p.trending).slice(0, 3);
+  const trendingIds = new Set(trending.map((t) => t.id));
+  // pick discounted items that are not already in trending
+  let discounted = products.filter((p) => p.discounted && !trendingIds.has(p.id)).slice(0, 3);
+  // if there are not enough discounted unique items, fill from remaining non-trending products
+  if (discounted.length < 3) {
+    const taken = new Set(discounted.map((d) => d.id));
+    const filler = products.filter((p) => !trendingIds.has(p.id) && !taken.has(p.id)).slice(0, 3 - discounted.length);
+    discounted = discounted.concat(filler);
+  }
 
   // Eco points demo: 100 points per purchase
   const ecoPoints = cart.length * 100;
@@ -74,13 +85,13 @@ const LandingPage = () => {
           <h2 className="text-xl font-semibold mb-3">Browse by category</h2>
           <div className="flex gap-4 overflow-x-auto pb-2">
             {categories.map((c) => (
-              <div key={c.id} className="min-w-[140px] bg-gray-800 rounded p-3 flex-shrink-0 text-center">
+              <Link key={c.id} to={`/category/${encodeURIComponent(c.name)}`} className="min-w-[140px] bg-gray-800 rounded p-3 flex-shrink-0 text-center no-underline hover:bg-gray-700">
                 <div className="w-full h-24 bg-white/5 rounded mb-2 flex items-center justify-center">
                   {/* image placeholder */}
                   <img src={c.image} alt={c.name} className="max-h-20" />
                 </div>
                 <div className="text-sm">{c.name}</div>
-              </div>
+              </Link>
             ))}
           </div>
         </section>
@@ -89,7 +100,7 @@ const LandingPage = () => {
         <section className="mb-6">
           <h2 className="text-xl font-semibold mb-3">Trending</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {products.filter(p => p.trending).map(p => (
+            {trending.map(p => (
               <Link key={p.id} to={`/product/${p.id}`} className="bg-gray-800 p-4 rounded flex flex-col no-underline hover:bg-gray-700">
                 <div className="h-36 bg-white/5 rounded mb-3 flex items-center justify-center">
                   <img src={p.image} alt={p.title} className="max-h-32" />
@@ -105,11 +116,16 @@ const LandingPage = () => {
           </div>
         </section>
 
+        {/* Banner Carousel between sections */}
+        <section className="mb-6">
+          <BannerCarousel />
+        </section>
+
         {/* Discounted Products */}
         <section className="mb-6">
           <h2 className="text-xl font-semibold mb-3">Discounted</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {products.filter(p => p.discounted).map(p => (
+            {discounted.map(p => (
               <Link key={p.id} to={`/product/${p.id}`} className="bg-gray-800 p-4 rounded flex flex-col no-underline hover:bg-gray-700">
                 <div className="h-36 bg-white/5 rounded mb-3 flex items-center justify-center">
                   <img src={p.image} alt={p.title} className="max-h-32" />

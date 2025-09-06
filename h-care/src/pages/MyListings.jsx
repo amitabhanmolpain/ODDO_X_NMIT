@@ -34,14 +34,21 @@ const MyListings = () => {
         <Link to="/profile" className="text-sm text-gray-300">Back</Link>
       </header>
 
-      {mine.length === 0 ? (
-        <div className="bg-gray-800 rounded-lg p-6 text-center">
-          <p className="mb-4">You have not added any listings yet.</p>
-          <Link to="/add-listing" className="px-4 py-2 bg-green-600 rounded">Add your item</Link>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {mine.map((l, i) => (
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Add new listing card */}
+        <Link to="/add-listing" className="bg-gray-800 rounded-lg p-6 flex flex-col items-center justify-center hover:bg-gray-700 no-underline text-white">
+          <div className="w-20 h-20 rounded-full bg-green-600 flex items-center justify-center text-2xl font-bold">+</div>
+          <div className="mt-3 text-sm">Add new listing</div>
+        </Link>
+
+        {mine.length === 0 ? (
+          <div className="col-span-2 bg-gray-800 rounded-lg p-6 text-center">
+            <p className="mb-4">You have not added any listings yet.</p>
+            <Link to="/add-listing" className="px-4 py-2 bg-green-600 rounded">Add your item</Link>
+          </div>
+        ) : (
+          mine.map((l, i) => (
             <div key={i} className="bg-gray-800 p-4 rounded flex gap-4 items-center">
               <div className="w-24 h-24 bg-white/5 flex items-center justify-center">
                 {l.image ? <img src={l.image} className="max-h-20" alt={l.title} /> : 'Image'}
@@ -51,9 +58,10 @@ const MyListings = () => {
                 <div className="text-sm text-gray-300">₹{l.price} • {l.category} • {l.status || 'Available'}</div>
               </div>
             </div>
-          ))}
+          ))
+        )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
