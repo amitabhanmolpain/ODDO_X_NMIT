@@ -9,7 +9,7 @@ export async function signup({ email, password, username }) {
     const result = await authAPI.register({ 
       email, 
       password, 
-      username: username || email.split('@')[0] // Use email prefix as username if not provided
+      display_name: username || email.split('@')[0] // Use email prefix as display_name if not provided
     });
     
     if (result.success) {

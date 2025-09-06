@@ -1,5 +1,6 @@
 // App.jsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 
 import Landing from "./components/Landing";
 import Cart from "./pages/Cart";
@@ -8,7 +9,6 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import RequireAuth from "./components/RequireAuth";
 import Toast from "./components/Toast";
-import React, { useEffect, useState } from "react";
 import Product from "./pages/Product";
 import MyListings from "./pages/MyListings";
 import AddListing from "./pages/AddListing";

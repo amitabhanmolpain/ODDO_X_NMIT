@@ -1,4 +1,6 @@
 from rest_framework import generics, permissions
+from rest_framework.response import Response
+from rest_framework import status
 from .serializers import SignupSerializer, ProfileSerializer, LoginSerializer
 from django.contrib.auth import get_user_model
 from items.serializers import ProductSerializer
@@ -34,6 +36,7 @@ class MyPurchasesView(generics.ListAPIView):
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)

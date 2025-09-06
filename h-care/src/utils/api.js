@@ -41,7 +41,7 @@ async function apiRequest(endpoint, options = {}) {
 // Auth API calls
 export const authAPI = {
   async register(userData) {
-    return apiRequest('/users/register/', {
+    return apiRequest('/users/signup/', {
       method: 'POST',
       body: JSON.stringify(userData),
     });
