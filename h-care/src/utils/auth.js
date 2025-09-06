@@ -1,55 +1,70 @@
-const USERS_KEY = 'hc_users';
+import { authAPI } from './api.js';
+
 const SESSION_KEY = 'hc_session';
+const TOKEN_KEY = 'access_token';
 
-export function loadUsers() {
+// Signup function - now uses backend API
+export async function signup({ email, password, username }) {
   try {
-    const raw = localStorage.getItem(USERS_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch (e) {
-    return {};
+    const result = await authAPI.register({ 
+      email, 
+      password, 
+      username: username || email.split('@')[0] // Use email prefix as username if not provided
+    });
+    
+    if (result.success) {
+      // Store the access token
+      localStorage.setItem(TOKEN_KEY, result.data.access);
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ email, username: result.data.user?.username || username }));
+      return { ok: true };
+    } else {
+      return { ok: false, error: result.error };
+    }
+  } catch (error) {
+    return { ok: false, error: 'Network error. Please try again.' };
   }
 }
 
-export function saveUsers(users) {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-}
-
-// NOTE: This is a simple frontend-only demo. Passwords are stored in plaintext in localStorage.
-// This is acceptable only for local demo/testing. For production, use a backend and proper hashing.
-export function signup({ email, password, name }) {
-  const users = loadUsers();
-  if (users[email]) {
-    return { ok: false, error: 'User already exists' };
+// Login function - now uses backend API
+export async function login({ email, password }) {
+  try {
+    const result = await authAPI.login({ email, password });
+    
+    if (result.success) {
+      // Store the access token
+      localStorage.setItem(TOKEN_KEY, result.data.access);
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ 
+        email, 
+        username: result.data.user?.username || email.split('@')[0] 
+      }));
+      return { ok: true };
+    } else {
+      return { ok: false, error: result.error };
+    }
+  } catch (error) {
+    return { ok: false, error: 'Network error. Please try again.' };
   }
-  users[email] = { email, name, password };
-  saveUsers(users);
-  // Set session
-  localStorage.setItem(SESSION_KEY, JSON.stringify({ email }));
-  return { ok: true };
-}
-
-export function login({ email, password }) {
-  const users = loadUsers();
-  const user = users[email];
-  if (!user) return { ok: false, error: 'No such user' };
-  const match = user.password === password;
-  if (!match) return { ok: false, error: 'Invalid password' };
-  localStorage.setItem(SESSION_KEY, JSON.stringify({ email }));
-  return { ok: true };
 }
 
 export function logout() {
   localStorage.removeItem(SESSION_KEY);
+  localStorage.removeItem(TOKEN_KEY);
 }
 
 export function currentUser() {
   try {
     const raw = localStorage.getItem(SESSION_KEY);
-    if (!raw) return null;
-    const { email } = JSON.parse(raw);
-    const users = loadUsers();
-    return users[email] || null;
+    const token = localStorage.getItem(TOKEN_KEY);
+    
+    if (!raw || !token) return null;
+    
+    return JSON.parse(raw);
   } catch (e) {
     return null;
   }
+}
+
+// Check if user is authenticated
+export function isAuthenticated() {
+  return !!localStorage.getItem(TOKEN_KEY);
 }

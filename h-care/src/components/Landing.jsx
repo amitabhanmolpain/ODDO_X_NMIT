@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
-import products, { categories } from "../constants/products";
+import { productsAPI } from "../utils/api";
 import BannerCarousel from './BannerCarousel';
 
 const CART_KEY = "hc_cart";
@@ -20,6 +20,29 @@ function saveCart(cart) {
 
 const LandingPage = () => {
   const [cart, setCart] = useState(loadCart());
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch products from backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const result = await productsAPI.getAll();
+        if (result.success) {
+          setProducts(result.data);
+        } else {
+          setError(result.error);
+        }
+      } catch (err) {
+        setError('Failed to load products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     saveCart(cart);
@@ -38,17 +61,39 @@ const LandingPage = () => {
     });
   };
 
-  // curated sections: enforce limits per design (max 3 each) and keep them disjoint so landing shows 6 unique items
-  const trending = products.filter((p) => p.trending).slice(0, 3);
-  const trendingIds = new Set(trending.map((t) => t.id));
-  // pick discounted items that are not already in trending
-  let discounted = products.filter((p) => p.discounted && !trendingIds.has(p.id)).slice(0, 3);
-  // if there are not enough discounted unique items, fill from remaining non-trending products
-  if (discounted.length < 3) {
-    const taken = new Set(discounted.map((d) => d.id));
-    const filler = products.filter((p) => !trendingIds.has(p.id) && !taken.has(p.id)).slice(0, 3 - discounted.length);
-    discounted = discounted.concat(filler);
+  if (loading) {
+    return (
+      <div className="bg-gray-900 text-white min-h-screen font-sans pt-4">
+        <Navbar />
+        <div className="flex items-center justify-center h-64">
+          <div className="text-xl">Loading products...</div>
+        </div>
+      </div>
+    );
   }
+
+  if (error) {
+    return (
+      <div className="bg-gray-900 text-white min-h-screen font-sans pt-4">
+        <Navbar />
+        <div className="flex items-center justify-center h-64">
+          <div className="text-xl text-red-400">Error: {error}</div>
+        </div>
+      </div>
+    );
+  }
+
+  // For demo purposes, create categories from available products
+  const categories = [...new Set(products.map(p => p.category))].map(cat => ({
+    id: cat,
+    name: cat,
+    image: '/placeholder-category.png' // You can add category images later
+  }));
+
+  // Curated sections - simple approach for integration
+  const recentProducts = products.slice(0, 6);
+  const trending = recentProducts.slice(0, 3);
+  const featured = recentProducts.slice(3, 6);
 
   // Eco points demo: 100 points per purchase
   const ecoPoints = cart.length * 100;
@@ -103,13 +148,18 @@ const LandingPage = () => {
             {trending.map(p => (
               <Link key={p.id} to={`/product/${p.id}`} className="bg-gray-800 p-4 rounded flex flex-col no-underline hover:bg-gray-700">
                 <div className="h-36 bg-white/5 rounded mb-3 flex items-center justify-center">
-                  <img src={p.image} alt={p.title} className="max-h-32" />
+                  {p.image ? (
+                    <img src={p.image} alt={p.title} className="max-h-32" />
+                  ) : (
+                    <div className="text-gray-500">No Image</div>
+                  )}
                 </div>
                 <div className="font-semibold text-white">{p.title}</div>
                 <div className="text-sm text-gray-300">₹{p.price}</div>
+                <div className="text-xs text-gray-400 mb-2">{p.category}</div>
                 <div className="mt-auto flex items-center justify-between">
                   <button onClick={(e) => { e.preventDefault(); addToCart(p); }} className="bg-green-600 px-3 py-1 rounded">Add</button>
-                  {p.discounted && <div className="text-sm text-yellow-300">Discount</div>}
+                  <div className="text-sm text-green-300">Available</div>
                 </div>
               </Link>
             ))}
@@ -121,20 +171,25 @@ const LandingPage = () => {
           <BannerCarousel />
         </section>
 
-        {/* Discounted Products */}
+        {/* Featured Products */}
         <section className="mb-6">
-          <h2 className="text-xl font-semibold mb-3">Discounted</h2>
+          <h2 className="text-xl font-semibold mb-3">Featured</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {discounted.map(p => (
+            {featured.map(p => (
               <Link key={p.id} to={`/product/${p.id}`} className="bg-gray-800 p-4 rounded flex flex-col no-underline hover:bg-gray-700">
                 <div className="h-36 bg-white/5 rounded mb-3 flex items-center justify-center">
-                  <img src={p.image} alt={p.title} className="max-h-32" />
+                  {p.image ? (
+                    <img src={p.image} alt={p.title} className="max-h-32" />
+                  ) : (
+                    <div className="text-gray-500">No Image</div>
+                  )}
                 </div>
                 <div className="font-semibold text-white">{p.title}</div>
                 <div className="text-sm text-gray-300">₹{p.price}</div>
+                <div className="text-xs text-gray-400 mb-2">{p.category}</div>
                 <div className="mt-auto flex items-center justify-between">
-                  <button onClick={(e) => { e.preventDefault(); addToCart(p); }} className="bg-yellow-400 px-3 py-1 rounded">Add</button>
-                  <div className="text-sm text-red-400">Save 20%</div>
+                  <button onClick={(e) => { e.preventDefault(); addToCart(p); }} className="bg-yellow-400 px-3 py-1 rounded text-black">Add</button>
+                  <div className="text-sm text-blue-400">Featured</div>
                 </div>
               </Link>
             ))}
