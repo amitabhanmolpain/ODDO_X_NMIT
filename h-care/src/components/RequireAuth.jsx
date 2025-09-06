@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { currentUser } from '../utils/auth';
+import { currentUser } from '../utils/auth.js';
 
 const RequireAuth = ({ children }) => {
   const user = currentUser();

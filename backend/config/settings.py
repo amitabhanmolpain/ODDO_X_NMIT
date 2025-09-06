@@ -142,10 +142,12 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "http://localhost:5174",  # Alternative Vite port
     "http://127.0.0.1:5174",
+    "http://localhost:5175",  # Additional Vite port
+    "http://127.0.0.1:5175",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = False  # More secure
+CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins for development
 
 # Add CORS headers for all requests
 CORS_ALLOW_HEADERS = [

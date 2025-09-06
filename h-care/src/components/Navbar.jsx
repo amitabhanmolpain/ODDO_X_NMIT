@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { productsAPI } from "../utils/api";
+import { productsAPI } from "../utils/api.js";
 
 const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');

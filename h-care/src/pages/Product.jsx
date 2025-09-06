@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { productsAPI } from '../utils/api';
+import { productsAPI } from '../utils/api.js';
 import products from '../constants/products';
 
 const Product = () => {

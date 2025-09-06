@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { signup } from '../utils/auth';
+import { signup } from '../utils/auth.js';
 
 const Signup = () => {
   const [email, setEmail] = useState('');

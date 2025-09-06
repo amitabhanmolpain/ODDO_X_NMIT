@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
-import { productsAPI } from "../utils/api";
+import { productsAPI } from "../utils/api.js";
 import BannerCarousel from './BannerCarousel';
 
 const CART_KEY = "hc_cart";

@@ -16,7 +16,7 @@ class ProductSerializer(serializers.ModelSerializer):
         read_only_fields = ('seller',)
 
     def create(self, validated_data):
-        # Handle image_url mapping
-        if 'image_url' in validated_data:
-            validated_data['image_url'] = validated_data.pop('image_url', None)
+        # Handle image mapping to image_url
+        if 'image' in validated_data:
+            validated_data['image_url'] = validated_data.pop('image', None)
         return super().create(validated_data)
